@@ -16,7 +16,7 @@ pipeline {
     stage('Checkout') {
       steps {
         echo "Cloning repository..."
-        git branch: 'main', url: 'https://github.com/yourusername/devops-demo.git'  // 🔹 Replace with your repo URL
+        git branch: 'main', url: 'https://github.com/Joseclement28/devops-demo.git'  // 🔹 Replace with your repo URL
       }
     }
 
