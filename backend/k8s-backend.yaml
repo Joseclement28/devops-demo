@@ -19,7 +19,7 @@ spec:
         - containerPort: 5000
         env:
         - name: DB_HOST
-          value: "CLOUD_SQL_IP"
+          value: "104.198.225.62"
         - name: DB_USER
           value: "root"
         - name: DB_PASSWORD
