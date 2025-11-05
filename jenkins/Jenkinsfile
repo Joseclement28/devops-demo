@@ -2,7 +2,7 @@ pipeline {
   agent any
 
   environment {
-    PROJECT_ID = 'your-project-id'       // 🔹 Replace with your GCP project ID
+    PROJECT_ID = 'amiable-archive-473111-d4'       // 🔹 Replace with your GCP project ID
     REGION     = 'us-central1'           // 🔹 Replace with your Artifact Registry & GKE region
     REPO       = 'devops-repo'           // 🔹 Artifact Registry repository name
 
