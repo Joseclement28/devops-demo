@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: backend
-        image: REGION-docker.pkg.dev/PROJECT_ID/repo/backend:latest
+        image: us-central1-docker.pkg.dev/amiable-archive-473111-d4/devops-repo/backend:latest
         ports:
         - containerPort: 5000
         env:
@@ -26,6 +26,8 @@ spec:
           value: "YOUR_PASSWORD"
         - name: DB_NAME
           value: "messages_db"
+      imagePullSecrets:
+      - name: gcp-artifact-registry
 ---
 apiVersion: v1
 kind: Service
