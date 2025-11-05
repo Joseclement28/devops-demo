@@ -14,9 +14,11 @@ spec:
     spec:
       containers:
       - name: frontend
-        image: REGION-docker.pkg.dev/PROJECT_ID/repo/frontend:latest
+        image: us-central1-docker.pkg.dev/amiable-archive-473111-d4/devops-repo/frontend:latest
         ports:
         - containerPort: 80
+      imagePullSecrets:
+      - name: gcp-artifact-registry
 ---
 apiVersion: v1
 kind: Service
