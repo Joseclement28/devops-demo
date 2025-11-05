@@ -23,7 +23,7 @@ spec:
         - name: DB_USER
           value: "root"
         - name: DB_PASSWORD
-          value: "YOUR_PASSWORD"
+          value: "Admin@1"
         - name: DB_NAME
           value: "messages_db"
       imagePullSecrets:
