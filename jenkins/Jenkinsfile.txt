@@ -1,0 +1,87 @@
+pipeline {
+  agent any
+
+  environment {
+    PROJECT_ID = 'your-project-id'       // 🔹 Replace with your GCP project ID
+    REGION     = 'us-central1'           // 🔹 Replace with your Artifact Registry & GKE region
+    REPO       = 'devops-repo'           // 🔹 Artifact Registry repository name
+
+    BACKEND_IMAGE  = "${REGION}-docker.pkg.dev/${PROJECT_ID}/${REPO}/backend"
+    FRONTEND_IMAGE = "${REGION}-docker.pkg.dev/${PROJECT_ID}/${REPO}/frontend"
+    CLUSTER_NAME   = 'devops-cluster'
+  }
+
+  stages {
+
+    stage('Checkout') {
+      steps {
+        echo "Cloning repository..."
+        git branch: 'main', url: 'https://github.com/yourusername/devops-demo.git'  // 🔹 Replace with your repo URL
+      }
+    }
+
+    stage('Build Backend Image') {
+      steps {
+        echo "Building backend Docker image..."
+        sh '''
+        docker build -t $BACKEND_IMAGE:latest ./backend
+        '''
+      }
+    }
+
+    stage('Build Frontend Image') {
+      steps {
+        echo "Building frontend Docker image..."
+        sh '''
+        docker build -t $FRONTEND_IMAGE:latest ./frontend
+        '''
+      }
+    }
+
+    stage('Authenticate to Artifact Registry') {
+      steps {
+        echo "Configuring Docker to use GCP Artifact Registry..."
+        sh '''
+        gcloud auth configure-docker ${REGION}-docker.pkg.dev -q
+        '''
+      }
+    }
+
+    stage('Push Docker Images') {
+      steps {
+        echo "Pushing images to Artifact Registry..."
+        sh '''
+        docker push $BACKEND_IMAGE:latest
+        docker push $FRONTEND_IMAGE:latest
+        '''
+      }
+    }
+
+    stage('Deploy to GKE') {
+      steps {
+        echo "Deploying to Google Kubernetes Engine..."
+        sh '''
+        # Authenticate to GKE using VM's service account
+        gcloud container clusters get-credentials $CLUSTER_NAME --region=$REGION --project=$PROJECT_ID
+
+        # Apply Kubernetes manifests
+        kubectl apply -f backend/k8s-backend.yaml
+        kubectl apply -f frontend/k8s-frontend.yaml
+
+        # Optional: Verify deployments
+        kubectl get pods
+        kubectl get svc
+        '''
+      }
+    }
+  }
+
+  post {
+    success {
+      echo "✅ Deployment completed successfully!"
+    }
+    failure {
+      echo "❌ Build or deployment failed. Check Jenkins logs."
+    }
+  }
+}
